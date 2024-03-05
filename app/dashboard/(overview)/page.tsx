@@ -1,19 +1,16 @@
-import { Card } from '@/app/ui/dashboard/cards';
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
+import CardWrapper from '@/app/ui/dashboard/cards';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
+import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import { lusitana } from '@/app/ui/fonts';
 
-import { fetchRevenue, fetchLatestInvoices, fetchCardData } from '@/app/lib/data';
+import {
+  CardsSkeleton,
+  LatestInvoicesSkeleton,
+  RevenueChartSkeleton
+} from '@/app/ui/skeletons';
+import { Suspense } from 'react';
 
 export default async function Page() {
-  const revenue = await fetchRevenue();
-  const latestInvoices = await fetchLatestInvoices();
-  const {
-    numberOfCustomers,
-    numberOfInvoices,
-    totalPaidInvoices,
-    totalPendingInvoices
-  } = await fetchCardData();
 
   return (
     <main>
@@ -21,7 +18,7 @@ export default async function Page() {
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Card title="Collected" value={totalPaidInvoices} type="collected" color='bg-blue-200'/>
+        {/* <Card title="Collected" value={totalPaidInvoices} type="collected" color='bg-blue-200'/>
         <Card title="Pending" value={totalPendingInvoices} type="pending" color='bg-red-200'/>
         <Card title="Total Invoices" value={numberOfInvoices} type="invoices" color='bg-green-200'/>
         <Card
@@ -29,11 +26,18 @@ export default async function Page() {
           value={numberOfCustomers}
           type="customers"
           color='bg-yellow-200'
-        />
+        /> */}
+        <Suspense fallback={<CardsSkeleton />}>
+          <CardWrapper />
+        </Suspense>
       </div>
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <RevenueChart revenue={revenue}  />
-        <LatestInvoices latestInvoices={latestInvoices} />
+        <Suspense fallback={<RevenueChartSkeleton />}>
+          <RevenueChart />
+        </Suspense>
+        <Suspense fallback={<LatestInvoicesSkeleton />}>
+          <LatestInvoices />
+        </Suspense>
       </div>
     </main>
   )
