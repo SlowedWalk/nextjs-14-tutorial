@@ -31,7 +31,7 @@ export const { auth, signIn, signOut } = NextAuth({
 
 async function getUser(email: string): Promise<User | undefined> {
   try {
-    const user = await sql<User>`SELEC * FROM users WHERE email=${email}`;
+    const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
     return user.rows[0];
   } catch (error) {
     console.log('Failed to fetch user:', error);
